@@ -31,6 +31,22 @@ router.put("/:id", async(req,res)=>{
 })
 // delete user
 
+router.delete("/:id", async(req,res)=>{
+
+    if(req.body.userId === req.params.id || req.body.isAdmin){
+        
+        try{
+            const user = await User.findByIdAndDelete(req.params.id);
+            res.status(200).json("Account has been deleted");
+        }catch(err){
+            return res.status(500).json(err);
+        }
+    }else{
+        res.status(403).json("You can only delete your account.")
+    }
+
+})
+
 // get a user
 
 // follow a user
