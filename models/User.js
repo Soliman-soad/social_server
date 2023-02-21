@@ -30,7 +30,7 @@ const UserShcema = new mongoose.Schema({
         type:Array,
         default:[]
     },
-    followers:{
+    following:{
         type:Array,
         default:[]
     },
