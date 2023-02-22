@@ -7,6 +7,7 @@ const morgan = require("morgan");
 const userRoute = require('./routes/users');
 const authRoute = require('./routes/auth');
 const postRoute = require('./routes/post');
+const port = process.env.PORT || 5500
 
 dotenv.config();
 
@@ -30,6 +31,6 @@ app.use('/api/auth',authRoute);
 // post router
 app.use('/api/post', postRoute);
 
-app.listen(5500,()=>{
-    console.log('back end running')
+app.listen(port,()=>{
+    console.log('backend running')
 })
