@@ -22,6 +22,11 @@ app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
 
+
+app.get('/',(req,res)=>{
+    res.send("Socia server")
+})
+
 // user router
 app.use('/api/users', userRoute);
 
