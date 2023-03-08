@@ -9,18 +9,9 @@ router.get("/", (req,res)=>{
 // update user
 router.put("/:id", async(req,res)=>{
 
-    if(req.body.userId === req.params.id || req.body.isAdmin){
-        if(req.body.password){
-            try{
-                const salt = await bcrypt.genSalt(10);
-                res.body.password = await bcrypt.hash(req.body.password, salt)
-            }catch(err){
-                return res.status(500).json(err)
-            }            
-        }
-        
+    if(req.body.uId === req.params.id || req.body.isAdmin){        
         try{
-            const user = await User.findByIdAndUpdate(req.params.id,{
+            const user = await User.findOneAndUpdate({uId : req.params.id},{
                 $set: req.body
             });
             res.status(200).json("Account has been updated");
@@ -53,9 +44,8 @@ router.delete("/:id", async(req,res)=>{
 // get a user
 router.get("/:id",async (req,res)=>{
     try{
-        const user = await User.findById(req.params.id);
-        const {password,updatedAt, ...other} = user._doc;
-        res.status(200).json(other);
+        const user = await User.find({uId:req.params.id});
+        res.status(200).json(user[0]);
     }catch(err){
         res.status(500).json(err)
     }
@@ -109,5 +99,15 @@ router.put("/:id/unfollow", async(req,res)=>{
         res.status(403).json("You can unfollow yourself")
     }
 })
+
+
+// get all user
+router.get("/:id/allUser",async(req,res)=>{
+    if( await User.find({uId: req.params.id })){
+        const users = await User.find({isAdmin : false})
+        res.status(200).json(users);
+    }
+})
+
 
 module.exports = router

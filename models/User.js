@@ -1,26 +1,9 @@
 const mongoose = require("mongoose");
 
 const UserShcema = new mongoose.Schema({
-    username:{
-        type: String,
-        require: true,
-        min: 3,
-        max: 30
-    },
-    email:{
-        type: String,
-        require:true,
-        max:40,
-        unique: true
-    },
-    password:{
-        type: String,
-        require: true,
-        min:6,
-    },
-    profilePicture:{
-        type: String,
-        default:""
+    singleUserData:{
+        type: Object,
+        required: true
     },
     profileCover:{
         type: String,
@@ -44,7 +27,12 @@ const UserShcema = new mongoose.Schema({
     },
     city:{
         type: String,
-        max : 50
+        max : 50,
+        default:""
+    },
+    uId:{
+        type: String,
+        default:""
     }
     
 },
