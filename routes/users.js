@@ -103,7 +103,7 @@ router.put("/:id/unfollow", async(req,res)=>{
 
 // get all user
 router.get("/:id/allUser",async(req,res)=>{
-    if( await User.find({uId: req.params.id })){
+    if( (await User.find({uId: req.params.id })).length !==0){
         const users = await User.find({isAdmin : false})
         res.status(200).json(users);
     }

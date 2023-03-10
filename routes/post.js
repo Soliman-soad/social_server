@@ -63,6 +63,27 @@ router.put("/:id/like",async (req,res)=>{
         res.status(500).json(err)
     }
 })
+// comment on a post 
+router.put("/:id/comment",async (req,res)=>{
+    try{
+        const post = await Post.findById(req.params.id);
+        await post.updateOne({$push: {comments: {user:req.body.user, comment:req.body.comment}}});
+        res.status(200).json("post has been commented");
+
+    }catch(err){
+        res.status(500).json(err)
+    }
+})
+// delete comment on a post 
+router.put("/:id/deleteComment",async (req,res)=>{
+    try{
+        const post = await Post.findById(req.params.id);
+        await post.updateOne({$pull : {comments: {user:req.body.user, comment:req.body.comment}}});
+        res.status(200).json("post comment deleted")
+    }catch(err){
+        res.status(500).json(err)
+    }
+})
 
 // get a post 
 router.get("/timelinePost/:id", async(req,res)=>{
@@ -90,11 +111,15 @@ router.get("/timeline/:id", async(req,res)=>{
     }
 })
 
-router.get("/allTimeline", async(req,res)=>{
-    console.log("err")
+router.get("/allTimeline/:id", async(req,res)=>{
+    const user = await User.find({uId: req.params.id})
     try{
-        const usersPosts = await Post.find();
+        if(user.length !== 0){
+            const usersPosts = await Post.find();
         res.status(200).json(usersPosts);
+        }else{
+            res.status(500).json("You are not a user")
+        }    
     }catch(err){
         res.status(500).json(err);
     }
