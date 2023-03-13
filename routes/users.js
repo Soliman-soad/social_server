@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const User = require("../models/User");
-const bcrypt = require("bcryptjs");
 
 router.get("/", (req,res)=>{
     res.send("user server")
@@ -45,7 +44,12 @@ router.delete("/:id", async(req,res)=>{
 router.get("/:id",async (req,res)=>{
     try{
         const user = await User.find({uId:req.params.id});
-        res.status(200).json(user[0]);
+        console.log(req.params.id)
+        if(user.length !== 0){
+            res.status(200).json(user[0]);
+        }else{
+            res.status(500).json("data not found")
+        }
     }catch(err){
         res.status(500).json(err)
     }
@@ -55,13 +59,12 @@ router.get("/:id",async (req,res)=>{
 router.put("/:id/follow", async(req,res)=>{
     if(req.body.userId !== req.params.id ){
         try{
-            const user = await User.findById(req.params.id);
-            const currentUser = await User.findById(req.body.userId);
-            
-            if(!user.friend.includes(req.body.userId)){
-                await user.updateOne({$push:{friend :req.body.userId}})
-                await currentUser.updateOne({$push: {following : req.params.id}})
-
+            const user = await User.find({uId :req.params.id});
+            const currentUser = await User.find({uId : req.body.userId});
+            if(!user[0].friend.includes(req.body.userId)){
+                await user[0].updateOne({$push:{friend :req.body.userId}})
+                await currentUser[0].updateOne({$push: {following : req.params.id}})
+                
                 res.status(200).json("user has been follow");
             }else{
                 res.status(403).json("You are already added")
@@ -80,12 +83,14 @@ router.put("/:id/follow", async(req,res)=>{
 router.put("/:id/unfollow", async(req,res)=>{
     if(req.body.userId !== req.params.id ){
         try{
-            const user = await User.findById(req.params.id);
-            const currentUser = await User.findById(req.body.userId);
+            const user = await User.find({uId :req.params.id});
+            const currentUser = await User.find({uId : req.body.userId});
             
-            if(user.friend.includes(req.body.userId)){
-                await user.updateOne({$pull:{friend :req.body.userId}})
-                await currentUser.updateOne({$pull: {following : req.params.id}})
+            console.log(user[0].friend)
+            console.log(req.body.userId)
+            if(user[0].friend.includes(req.body.userId)){
+                await user[0].updateOne({$pull:{friend :req.body.userId}})
+                await currentUser[0].updateOne({$pull: {following : req.params.id}})
 
                 res.status(200).json("user has been unfollow");
             }else{
