@@ -117,7 +117,7 @@ router.get("/allTimeline/:id", async(req,res)=>{
     const user = await User.find({uId: req.params.id})
     try{
         if(user.length !== 0){
-            const usersPosts = await Post.find();
+            const usersPosts = await Post.find().sort({_id:-1});
         res.status(200).json(usersPosts);
         }else{
             res.status(500).json("You are not a user")
